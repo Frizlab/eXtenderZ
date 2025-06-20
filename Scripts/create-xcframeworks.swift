@@ -47,22 +47,22 @@ struct CreateXcframeworks : AsyncParsableCommand {
 					"-debug-symbols", "\(archiveURL.appendingPathComponent("dSYMs").appendingPathComponent("eXtenderZ.framework.dSYM").absoluteURL.path)"
 				] }
 			),
-			(
-				name: "static+kvo",
-				additionalPreprocessorInstructions: "ALLOW_KVO_HACK",
-				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
-					"-library", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("lib").appendingPathComponent("libeXtenderZ.a").absoluteURL.path)",
-					"-headers", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("include").absoluteURL.path)"
-				] }
-			),
-			(
-				name: "dynamic+kvo",
-				additionalPreprocessorInstructions: "ALLOW_KVO_HACK",
-				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
-					"-framework", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("Library").appendingPathComponent("Frameworks").appendingPathComponent("eXtenderZ.framework").absoluteURL.path)",
-					"-debug-symbols", "\(archiveURL.appendingPathComponent("dSYMs").appendingPathComponent("eXtenderZ.framework.dSYM").absoluteURL.path)"
-				] }
-			),
+//			(
+//				name: "static+kvo",
+//				additionalPreprocessorInstructions: "ALLOW_KVO_HACK",
+//				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
+//					"-library", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("lib").appendingPathComponent("libeXtenderZ.a").absoluteURL.path)",
+//					"-headers", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("include").absoluteURL.path)"
+//				] }
+//			),
+//			(
+//				name: "dynamic+kvo",
+//				additionalPreprocessorInstructions: "ALLOW_KVO_HACK",
+//				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
+//					"-framework", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("Library").appendingPathComponent("Frameworks").appendingPathComponent("eXtenderZ.framework").absoluteURL.path)",
+//					"-debug-symbols", "\(archiveURL.appendingPathComponent("dSYMs").appendingPathComponent("eXtenderZ.framework.dSYM").absoluteURL.path)"
+//				] }
+//			),
 		]
 		
 		/* This list was created from the following command: `xcodebuild -showdestinations -scheme eXtenderZ-dynamic | grep name:Any`.
