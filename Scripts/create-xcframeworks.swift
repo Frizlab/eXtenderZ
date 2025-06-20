@@ -31,15 +31,38 @@ struct CreateXcframeworks : AsyncParsableCommand {
 		let buildFolderURL = URL(fileURLWithPath: "./build", isDirectory: true)
 		let archivesFolderURL = buildFolderURL.appendingPathComponent("archives")
 		let types = [
-			(name: "static",  xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
-				"-library", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("lib").appendingPathComponent("libeXtenderZ.a").absoluteURL.path)",
-				"-headers", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("include").absoluteURL.path)"
-			] }),
-			
-			(name: "dynamic", xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
-				"-framework", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("Library").appendingPathComponent("Frameworks").appendingPathComponent("eXtenderZ.framework").absoluteURL.path)",
-				"-debug-symbols", "\(archiveURL.appendingPathComponent("dSYMs").appendingPathComponent("eXtenderZ.framework.dSYM").absoluteURL.path)"
-			] })
+			(
+				name: "static",
+				additionalPreprocessorInstructions: nil,
+				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
+					"-library", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("lib").appendingPathComponent("libeXtenderZ.a").absoluteURL.path)",
+					"-headers", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("include").absoluteURL.path)"
+				] }
+			),
+			(
+				name: "dynamic",
+				additionalPreprocessorInstructions: nil,
+				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
+					"-framework", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("Library").appendingPathComponent("Frameworks").appendingPathComponent("eXtenderZ.framework").absoluteURL.path)",
+					"-debug-symbols", "\(archiveURL.appendingPathComponent("dSYMs").appendingPathComponent("eXtenderZ.framework.dSYM").absoluteURL.path)"
+				] }
+			),
+			(
+				name: "static+kvo",
+				additionalPreprocessorInstructions: "ALLOW_KVO_HACK",
+				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
+					"-library", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("lib").appendingPathComponent("libeXtenderZ.a").absoluteURL.path)",
+					"-headers", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("include").absoluteURL.path)"
+				] }
+			),
+			(
+				name: "dynamic+kvo",
+				additionalPreprocessorInstructions: "ALLOW_KVO_HACK",
+				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
+					"-framework", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("Library").appendingPathComponent("Frameworks").appendingPathComponent("eXtenderZ.framework").absoluteURL.path)",
+					"-debug-symbols", "\(archiveURL.appendingPathComponent("dSYMs").appendingPathComponent("eXtenderZ.framework.dSYM").absoluteURL.path)"
+				] }
+			),
 		]
 		
 		/* This list was created from the following command: `xcodebuild -showdestinations -scheme eXtenderZ-dynamic | grep name:Any`.
@@ -81,6 +104,7 @@ struct CreateXcframeworks : AsyncParsableCommand {
 					"-destination", "generic/platform=\(platform)" + (variant.flatMap{ ",variant=" + $0 } ?? ""),
 					"-archivePath", "\(archiveURL.absoluteURL.path)",
 					"SKIP_INSTALL=NO", "BUILD_LIBRARY_FOR_DISTRIBUTION=YES",
+					#"GCC_PREPROCESSOR_DEFINITIONS="$(inherited)\#(type.additionalPreprocessorInstructions.map{ " " + $0 } ?? "")""#,
 					stdoutRedirect: .none, stderrRedirect: .none
 				).invokeAndGetRawOutput()
 				xcframeworkArgs.append(contentsOf: type.xcframeworkArgs(archiveURL))

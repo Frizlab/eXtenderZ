@@ -80,3 +80,5 @@ jobs:
               path: |
                  build/eXtenderZ-dynamic.xcframework.zip
                  build/eXtenderZ-static.xcframework.zip
+                 build/eXtenderZ-dynamic+kvo.xcframework.zip
+                 build/eXtenderZ-static+kvo.xcframework.zip
