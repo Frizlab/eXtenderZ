@@ -100,7 +100,7 @@ struct CreateXcframeworks : AsyncParsableCommand {
 				_ = try await ProcessInvocation(
 					"xcodebuild", "archive",
 					"-project", "eXtenderZ.xcodeproj",
-					"-scheme", "eXtenderZ-\(type.name)",
+					"-scheme", "eXtenderZ-\(type.name.split(separator: "+", maxSplits: 1, omittingEmptySubsequences: false).first!)",
 					"-destination", "generic/platform=\(platform)" + (variant.flatMap{ ",variant=" + $0 } ?? ""),
 					"-archivePath", "\(archiveURL.absoluteURL.path)",
 					"SKIP_INSTALL=NO", "BUILD_LIBRARY_FOR_DISTRIBUTION=YES",
