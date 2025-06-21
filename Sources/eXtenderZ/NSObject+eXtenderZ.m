@@ -28,7 +28,6 @@ limitations under the License. */
 
 
 #define ALLOW_KVO_HACK
-#undef ALLOW_KVO_HACK
 
 static char EXTENDERS_KEY; /* Global 0 initialization is fine here.
 									 * No need to change it since the value of the variable is not used; only its address. */
@@ -573,16 +572,21 @@ static CFHashCode classPairHash(const void *value) {
 {
 	t_class_pair classPair = {.class1 = object_getClass(self), .class2 = originalHelptenderClass, .retainCount = NSUIntegerMax};
 	
-#ifndef ALLOW_KVO_HACK
-	CFNumberRef n = CFDictionaryGetValue(sharedClassLevelFromOriginalAndRuntimeHelptender(), &classPair);
-	NSCAssert(n != NULL, @"***** INTERNAL ERROR: Got NULL level for class pair %s/%s.", class_getName(classPair.class1), class_getName(classPair.class2));
-#else
+#ifdef ALLOW_KVO_HACK
 	CFNumberRef n = NULL;
-	do {
+	if (XTZExtenderConfig.enableKVOHack) {
+		do {
+			n = CFDictionaryGetValue(sharedClassLevelFromOriginalAndRuntimeHelptender(), &classPair);
+			/* If n is NULL (unregistered class pair), we try with super classes because (among others) KVO does ISA-swizzling too and screws the class pair registration… */
+		} while (n == NULL && (classPair.class1 = class_getSuperclass(classPair.class1)) != Nil);
+		NSCAssert(n != NULL, @"***** INTERNAL ERROR: Got NULL level for class pair %s (or superclass)/%s.", class_getName(object_getClass(self)), class_getName(classPair.class2));
+	} else {
 		n = CFDictionaryGetValue(sharedClassLevelFromOriginalAndRuntimeHelptender(), &classPair);
-		/* If n is NULL (unregistered class pair), we try with super classes because (among others) KVO does ISA-swizzling too and screws the class pair registration… */
-	} while (n == NULL && (classPair.class1 = class_getSuperclass(classPair.class1)) != Nil);
-	NSCAssert(n != NULL, @"***** INTERNAL ERROR: Got NULL level for class pair %s (or superclass)/%s.", class_getName(object_getClass(self)), class_getName(classPair.class2));
+		NSCAssert(n != NULL, @"***** INTERNAL ERROR: Got NULL level for class pair %s/%s.", class_getName(classPair.class1), class_getName(classPair.class2));
+	}
+#else
+	n = CFDictionaryGetValue(sharedClassLevelFromOriginalAndRuntimeHelptender(), &classPair);
+	NSCAssert(n != NULL, @"***** INTERNAL ERROR: Got NULL level for class pair %s/%s.", class_getName(classPair.class1), class_getName(classPair.class2));
 #endif
 	CFIndex level = 0;
 	CFNumberGetValue(n, kCFNumberCFIndexType, &level);

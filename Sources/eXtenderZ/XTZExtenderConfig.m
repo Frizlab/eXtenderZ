@@ -21,6 +21,7 @@ limitations under the License. */
 @implementation XTZExtenderConfig
 
 static os_log_t oslog = nil;
+static BOOL enableKVOHack = NO;
 
 + (void)load
 {
@@ -36,6 +37,16 @@ static os_log_t oslog = nil;
 + (void)setOslog:(os_log_t)newOslog
 {
 	oslog = newOslog;
+}
+
++ (BOOL)enableKVOHack
+{
+	return enableKVOHack;
+}
+
++ (void)setEnableKVOHack:(BOOL)flag
+{
+	enableKVOHack = flag;
 }
 
 - (instancetype)init

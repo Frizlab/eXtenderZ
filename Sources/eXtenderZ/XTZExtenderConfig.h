@@ -26,6 +26,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (os_log_t)oslog;
 + (void)setOslog:(os_log_t)newOslog;
 
+/**
+ Whether the KVO hack is enabled to make eXtenderZ work on KVObserved instances.
+ 
+ This defaults to `NO`. */
++ (BOOL)enableKVOHack;
+/**
+ Set whether the KVO hack should be enable.
+ 
+ Set this value before extending anything, and never change it later! */
++ (void)setEnableKVOHack:(BOOL)flag;
+
 /** This object is a container for static configuration properties and should not be instantiated. */
 - (instancetype)init NS_UNAVAILABLE;
 
