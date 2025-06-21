@@ -33,7 +33,7 @@ struct CreateXcframeworks : AsyncParsableCommand {
 		let types = [
 			(
 				name: "static",
-				additionalPreprocessorInstructions: nil,
+				additionalPreprocessorInstructions: nil as String?,
 				xcframeworkArgs: { (_ archiveURL: URL) -> [String] in [
 					"-library", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("lib").appendingPathComponent("libeXtenderZ.a").absoluteURL.path)",
 					"-headers", "\(archiveURL.appendingPathComponent("Products").appendingPathComponent("usr").appendingPathComponent("local").appendingPathComponent("include").absoluteURL.path)"
