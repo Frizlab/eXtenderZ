@@ -1042,8 +1042,8 @@ static Class changeClassOfObjectNotifyingHelptenders(XTZ_NSObject *object, Class
 {
 #pragma unused(originalHelptenderClass)
 	return object_getClass(self); /* And not the superclass!
-											 * We call this method in a helptender, expecting to call super.
-											 * We must call the original class then. */
+	                               * We call this method in a helptender, expecting to call super.
+	                               * We must call the original class then. */
 }
 
 #ifdef eXtenderZ_STATIC
